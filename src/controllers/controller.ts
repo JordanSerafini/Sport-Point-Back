@@ -1,74 +1,101 @@
 import { Request, Response } from 'express';
-import UserModel from '../models/UserModel';
-import ExpenseModel from '../models/expenseModel';
+import InformationModel from '../models/informationsModel';
 
 class UserAndExpenseController {
-    // Ajouter un nouvel utilisateur
-    public static async addUser(req: Request, res: Response): Promise<void> {
-        const { name, email, password } = req.body;
+
+    // Récupérer toutes les informations
+    public static async getAllInformations(req: Request, res: Response): Promise<void> {
+        console.log("informations");
+
         try {
-            await UserModel.insertUser(name, email, password);
-            res.status(201).json({ message: 'Utilisateur créé avec succès' });
+            const informations = await InformationModel.getAllInformations();
+            res.status(200).json(informations);
         } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la création de l’utilisateur' });
+            res.status(500).json({ error: 'Erreur lors de la récupération des informations' });
         }
     }
-
-    // Récupérer tous les utilisateurs
-    public static async getAllUsers(req: Request, res: Response): Promise<void> {
-        try {
-            const users = await UserModel.getAllUsers();
-            res.status(200).json(users);
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
-        }
-    }
-
-    // Ajouter une nouvelle dépense
-    public static async addExpense(req: Request, res: Response): Promise<void> {
-        const { name, amount, date, comment, category, utilisateur_id } = req.body;
-        try {
-            await ExpenseModel.insertExpense(name, amount, date, comment, category, utilisateur_id);
-            res.status(201).json({ message: 'Dépense ajoutée avec succès' });
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de l’ajout de la dépense' });
-        }
-    }
-
-    // Supprimer une dépense par ID
-    public static async deleteExpense(req: Request, res: Response): Promise<void> {
+    // Récupérer une information par ID
+    public static async getInformationById(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
         try {
-            await ExpenseModel.deleteExpenseById(Number(id));
-            res.status(200).json({ message: 'Dépense supprimée avec succès' });
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la suppression de la dépense' });
-        }
-    }
-
-    // Récupérer une dépense par ID
-    public static async getExpenseById(req: Request, res: Response): Promise<void> {
-        try {
-            const expense = await ExpenseModel.getExpenseById(Number());
-            if (expense) {
-                res.status(200).json(expense);
+            const information = await InformationModel.getInformationById(Number(id));
+            if (information) {
+                res.status(200).json(information);
             } else {
-                res.status(404).json({ message: 'Dépense non trouvée' });
+                res.status(404).json({ message: 'Information non trouvée' });
             }
         } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la récupération de la dépense' });
+            res.status(500).json({ error: 'Erreur lors de la récupération de l’information' });
+        }
+    }
+    // Ajouter une information
+    public static async createInformation(req: Request, res: Response): Promise<void> {
+        const { name, description, adresse, longitude, latitude, image, type, note, horaires, site, open } = req.body;
+        try {
+          const newInformation = await InformationModel.createInformation({
+              name,
+              description,
+              adresse,
+              longitude,
+              latitude,
+              image,
+              type,
+              note,
+              horaires,
+              site,
+              open,
+              id: 0
+          });
+      
+          res.status(201).json(newInformation);
+        } catch (error) {
+          res.status(500).json({ error: 'Erreur lors de l’ajout de l’information' });
+        }
+      }
+    // Modifier une information
+    public static async updateInformation(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        const { name, description, adresse, longitude, latitude, image, type, note, horaires, site, open } = req.body;
+        try {
+            const updatedInformation = await InformationModel.updateInformation({
+                id: Number(id),
+                name,
+                description,
+                adresse,
+                longitude,
+                latitude,
+                image,
+                type,
+                note,
+                horaires,
+                site,
+                open
+            });
+            if (updatedInformation) {
+                res.status(200).json({ message: 'Information modifiée' });
+            } else {
+                res.status(404).json({ message: 'Information non trouvée' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Erreur lors de la modification de l’information' });
+        }
+    }
+    // Supprimer une information
+    public static async deleteInformation(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+        try {
+            const deletedInformation = await InformationModel.deleteInformation(Number(id));
+            if (deletedInformation) {
+                res.status(200).json({ message: 'Information supprimée' });
+            } else {
+                res.status(404).json({ message: 'Information non trouvée' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Erreur lors de la suppression de l’information' });
         }
     }
 
-    // Récupérer toutes les dépenses
-    public static async getAllExpense(req: Request, res: Response): Promise<void> {
-        try {
-            const expenses = await ExpenseModel.getAllExpense();
-            res.status(200).json(expenses);
-        } catch (error) {
-            res.status(500).json({ error: 'Erreur lors de la récupération des dépenses' });
-        }
-    }
+    
 }
 
 export default UserAndExpenseController;

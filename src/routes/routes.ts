@@ -8,14 +8,13 @@ router.get('/', (req, res) => {
   });
 
 
-// Route login
-router.post('/expense', controller.addExpense);
-router.get('/expense', controller.getAllExpense);
-router.delete('/expense/:id', controller.deleteExpense);
+// Routes pour les informations
+router.get('/informations', controller.getAllInformations);
+router.get('/informations/:id', controller.getInformationById);
+router.post('/informations', controller.createInformation);
+router.put('/informations/:id', controller.updateInformation);
+router.delete('/informations/:id', controller.deleteInformation);
 
-//Route user
-router.post('/user', controller.addUser);
-router.get('/users', controller.getAllUsers);
 
 
 
