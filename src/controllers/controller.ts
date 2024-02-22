@@ -29,6 +29,12 @@ class UserAndExpenseController {
     // Ajouter une information
     public static async createInformation(req: Request, res: Response): Promise<void> {
         const { name, description, adresse, longitude, latitude, image, type, note, horaires, site, open } = req.body;
+
+        if (!longitude || !latitude) {
+            res.status(400).json({ error: 'Coordonnées manquantes' });
+            return;
+          }
+
         try {
           const newInformation = await InformationModel.createInformation({
               name,
@@ -92,6 +98,7 @@ class UserAndExpenseController {
             res.status(500).json({ error: 'Erreur lors de la suppression de l’information' });
         }
     }
+
 
     
 }
