@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import InformationModel from '../models/informationsModel';
+import coordinateService from '../services/coordinateService';
 
 class UserAndExpenseController {
 
@@ -28,12 +29,20 @@ class UserAndExpenseController {
     }
     // Ajouter une information
     public static async createInformation(req: Request, res: Response): Promise<void> {
-        const { name, description, adresse, longitude, latitude, image, type, note, horaires, site, open } = req.body;
+        let { name, description, adresse, longitude, latitude, image, type, note, horaires, site, open } = req.body;
 
-        if (!longitude || !latitude) {
-            res.status(400).json({ error: 'Coordonnées manquantes' });
-            return;
-          }
+        if (longitude == null || latitude == null) {
+                try {
+                    const coordinates = await coordinateService.getAdressCoordinate(adresse);
+                    if (coordinates.error) {
+                        res.status(500).json({ error: coordinates.error });
+                    }
+                    longitude = coordinates.longitude;
+                    latitude = coordinates.latitude;
+                } catch (error) {
+                    res.status(500).json({ error: "Erreur lors de la récupération des coordonnées" });
+                }
+            }
 
         try {
           const newInformation = await InformationModel.createInformation({

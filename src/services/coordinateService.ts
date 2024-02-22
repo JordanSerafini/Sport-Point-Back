@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const coordinateService = {
-  getAdressCoordinate: async (adresse) => {
+  getAdressCoordinate: async (adresse:string) => {
     let error;
     let latitude;
     let longitude;
@@ -14,7 +14,6 @@ const coordinateService = {
           limit: 1
         },
         headers: {
-          // Nominatim requires a user-agent header to be set
           'User-Agent': 'node.js'
         }
       });
@@ -40,4 +39,4 @@ const coordinateService = {
   }
 };
 
-module.exports = coordinateService;
+export default coordinateService;
