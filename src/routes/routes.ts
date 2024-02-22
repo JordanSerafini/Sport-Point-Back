@@ -16,8 +16,4 @@ router.put('/informations/:id', controller.updateInformation);
 router.delete('/informations/:id', controller.deleteInformation);
 
 
-
-
-
-
 export default router
