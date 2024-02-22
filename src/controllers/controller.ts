@@ -5,8 +5,6 @@ class UserAndExpenseController {
 
     // Récupérer toutes les informations
     public static async getAllInformations(req: Request, res: Response): Promise<void> {
-        console.log("informations");
-
         try {
             const informations = await InformationModel.getAllInformations();
             res.status(200).json(informations);
