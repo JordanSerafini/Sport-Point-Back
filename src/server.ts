@@ -17,7 +17,7 @@ const corsOptions = {
   origin: ["http://localhost:5173", "https://sportpoint.netlify.app", "sportpoint.netlify.app"]
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 
 
